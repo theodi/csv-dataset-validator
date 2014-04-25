@@ -1,0 +1,39 @@
+---
+layout: default
+title: CSV dataset health check
+link: /
+---
+
+<section id="front-page">
+	<h2>CSV Dataset health check</h2>
+	<p>Enter the URL of a CKAN dataset you wish to health check in the box below.</p>
+	<p><em>Note:</em>Currently this has to be the datasets API url e.g. <i>http://data.gov.uk/api/2/rest/package/financial-transactions-data-hmrc</i></p>
+	<input type="text" id="input_url"></input>
+	<br/>
+	<button type="submit" class="btn btn-primary btn-bl" id="submit">Submit</button>
+</section>
+
+<section id="result"> 
+	<section id="titles">
+		<h2 id="dataset-title"></h2>
+		<p id="dataset-description"></p>
+	</section>
+	<progress value="0" max="100"><div id="progress" class="pgraph"><div id="bar" style="width:0%"><p>0% complete</p></div></div></progress>
+	<section id="file-problems">
+		<h2>CSV File Validation</h2>
+		<table id="file_validation">
+		<tr>
+		<th>Listed number of CSV Files</th><td id="file-count">0</td>
+		<th>Compatible CSV Files</th><td id="csv-yes">0</td>
+		<th>Invalid files</th><td id="csv-no">0</td>
+		</table>
+		<section id="invalid-csv-detail">
+			<div id="invalid-csv-detail-text"> 
+			</div>
+		</section>
+	</section>
+	<section id="column-titles">
+	</section>
+	<section id="lines-per-file">
+	</section>
+</section>
