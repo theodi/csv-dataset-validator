@@ -28,17 +28,17 @@ code {
 
 /* CSV File Validataion table */
 
-#file_validation {
+.validation_table {
 	width: 90%;
 	font-size: 1.4em;
 	border: 1px solid gray;
 }
 
-#file_validation th {
+.validation_table th {
 	text-align: left;
 	padding: 10px;
 }
-#file_validation td {
+.validation_table td {
 	text-align: center;
 	padding: 10px;
 	border-left: 1px solid gray;
@@ -53,15 +53,31 @@ code {
 #csv-no {
 	background-color: #f2dede;
 }
-#invalid-csv-detail {
+.invalid-item-detail {
 	width: 89.85%;
 	border-left: 1px solid gray;
 	border-right: 1px solid gray;
 	border-bottom: 1px solid gray;
+}
+.invalid-csv-detail {
 	background-color: #f2dede;
 }
-#invalid-csv-detail-text {
+.detail-text {
 	padding: 10px;
+}
+.file_list {
+	font-size: 0.8em;
+}
+#columns-table {
+	width: 100%;
+	border: 1px solid gray;
+	background-color: #D3D3D3;
+}
+#columns-table td {
+	font-weight: bold;
+	padding: 10px;
+	width: 100px;
+	border-right: 1px solid gray;
 }
 
 

@@ -1,3 +1,27 @@
+function CSVtoArray(text) {
+    var re_valid = /^\s*(?:'[^'\\]*(?:\\[\S\s][^'\\]*)*'|"[^"\\]*(?:\\[\S\s][^"\\]*)*"|[^,'"\s\\]*(?:\s+[^,'"\s\\]+)*)\s*(?:,\s*(?:'[^'\\]*(?:\\[\S\s][^'\\]*)*'|"[^"\\]*(?:\\[\S\s][^"\\]*)*"|[^,'"\s\\]*(?:\s+[^,'"\s\\]+)*)\s*)*$/;
+    var re_value = /(?!\s*$)\s*(?:'([^'\\]*(?:\\[\S\s][^'\\]*)*)'|"([^"\\]*(?:\\[\S\s][^"\\]*)*)"|([^,'"\s\\]*(?:\s+[^,'"\s\\]+)*))\s*(?:,|$)/g;
+    // Return NULL if input string is not well formed CSV string.
+    if (!re_valid.test(text)) {
+        console.warn("CSVtoArray: Invalid csv text.\n\nSee http://stackoverflow.com/questions/8493195/how-can-i-parse-a-csv-string-with-javascript for help.");
+        console.warn(text);
+        return null;
+    }
+    var a = [];                     // Initialize array to receive values.
+    text.replace(re_value, // "Walk" the string using replace with callback.
+        function(m0, m1, m2, m3) {
+            // Remove backslash from \' in single quoted values.
+            if      (m1 !== undefined) a.push(m1.replace(/\\'/g, "'"));
+            // Remove backslash from \" in double quoted values.
+            else if (m2 !== undefined) a.push(m2.replace(/\\"/g, '"'));
+            else if (m3 !== undefined) a.push(m3);
+            return ''; // Return empty string.
+        });
+    // Handle special case of empty last value.
+    if (/,\s*$/.test(text)) a.push('');
+    return a;
+};
+
 function handleValidationForURL(url) {
 	$.getJSON("http://odinprac.theodi.org/CSV_Dataset_Validator/get_data.php?url="+url, function(json) {
 		// Loading percentage
@@ -9,6 +33,7 @@ function handleValidationForURL(url) {
 			setTimeout(function(){handleValidationForURL(url);},500);
 		}
 		processFileProblems(json);
+		processColumnTitles(json);
 	})
 	.error(function() {
         	//console.log("error fetching data");
@@ -48,6 +73,78 @@ function processFileProblems(json) {
 		$( "#invalid-csv-detail-text" ).append("Although this file looks like a CSV file (by name) when attempting to open the <code>Content-Type</code> appears to be <code>"+file_mime+"</code><br/><br/>To fix this error you may need to re-upload the file or link to the correct CSV file.");
 		open = true;
 	}
+}
+
+function processColumnTitles(json) {
+	variations = Object.keys(json.column_titles).length;
+	$( "#column-title-variations").html(variations);
+	if (variations > 4) {
+                $('#column-title-variations').css('background-color', '#f2dede');
+                $('#invalid-column-detail-text').css('background-color', '#f2dede');
+        } else if (variations > 2) {
+                $('#column-title-variations').css('background-color', 'orange');
+                $('#invalid-column-detail-text').css('background-color', '#orange');
+        } else {
+                $('#column-title-variations').css('background-color', 'green');
+                $('#invalid-column-detail-text').css('background-color', '#green');
+        }
+	open = false;
+	for (var val in json.column_titles) {
+        	if (open) {
+			$('#invalid-column-detail-text').append('<hr/>');
+		}
+		array = CSVtoArray(val);
+		html = '<table id="columns-table"><tr>';
+		for (var item in array) {
+			html += '<td>' + array[item] + '</td>';
+		}
+		html += '</tr>';
+		html += '</table>';
+		html += '<b>Files:</b><ul class="file_list">';
+		
+		files = json.column_titles[val];
+		for (file_num in files) {
+			file_name = json.files[file_num]["filename"];
+			file_description = json.files[file_num]["description"];
+			html+= "<li><b>" + file_description + " (" + file_name + ")</b></li>";
+		}
+		html += '</ul>';
+        	$('#invalid-column-detail-text').append(html);
+		open = true;
+	}
+	/*
+	max = 0;
+	for (var val in json.column_titles) {
+		array = CSVtoArray(val);
+		if (array.length > max) {
+			max = array.length;
+		}
+	}
+	html = '<table id="columns-table"><tr><th>No.</th>';
+	for (i=0;i<max;i++) {
+		col = i+1;
+		html+='<th class="coltitle">col ' + col + '</th>';
+	}
+	html += '</tr>';
+	row_count = 1;
+	for (var val in json.column_titles) {
+		html += '<tr><td>' + row_count + '</td>';
+		row_count++;
+		array = CSVtoArray(val);
+		column_count = 0;
+		for (var item in array) {
+			html += '<td>' + array[item] + '</td>';
+			column_count++;
+		}
+		while (column_count < max) {
+			html += '<td>&nbsp;</td>';
+			column_count++;
+		}
+		html += '</tr>';
+	}
+	html += '</table>';
+        $('#invalid-column-detail-text').html(html);
+	*/
 }
 
 $( document ).ready(function() {
