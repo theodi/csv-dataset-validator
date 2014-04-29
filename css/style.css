@@ -122,3 +122,8 @@ progress {
 	color: red;
 	border: 1px solid red;
 }
+
+#chart svg {
+	padding-bottom: 100px;
+	height: 500px;
+}

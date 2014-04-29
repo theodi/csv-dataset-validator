@@ -25,7 +25,6 @@ function CSVtoArray(text) {
 function handleValidationForURL(url) {
 	$.getJSON("http://odinprac.theodi.org/CSV_Dataset_Validator/get_data.php?url="+url, function(json) {
 		// Loading percentage
-		console.log("hello");
 		console.log(json);
 		percent = Math.floor((json.completed / json.file_count) * 100);
 		$('progress').attr('value',percent);
@@ -34,6 +33,7 @@ function handleValidationForURL(url) {
 		}
 		processFileProblems(json);
 		processColumnTitles(json);
+		processLineNumbers(json);
 	})
 	.error(function() {
         	//console.log("error fetching data");
@@ -75,6 +75,28 @@ function processFileProblems(json) {
 	}
 }
 
+function processLineNumbers(json) {
+	var data = [];
+	var obj = {};
+	obj.key = "Line Counts";
+	var file_array = [];
+	for (file_num in json.files) {
+		var obj2 = {};
+		obj2.series = 0;	
+		file = json.files[file_num];
+		shortName = file.description + " (" + file.filename + ")";
+		lineCount = json.line_counts[file_num];
+		obj2.x = file.description;
+		obj2.xLong = shortName;
+		obj2.y = lineCount;
+		file_array.push(obj2);
+	}
+	obj.values = file_array;
+	data.push(obj);
+	updateChart(chart,data);
+	
+}
+
 function processColumnTitles(json) {
 	variations = Object.keys(json.column_titles).length;
 	$( "#column-title-variations").html(variations);
@@ -103,7 +125,8 @@ function processColumnTitles(json) {
 		html += '<b>Files:</b><ul class="file_list">';
 		
 		files = json.column_titles[val];
-		for (file_num in files) {
+		for (num in files) {
+			file_num = files[num];
 			file_name = json.files[file_num]["filename"];
 			file_description = json.files[file_num]["description"];
 			html+= "<li><b>" + file_description + " (" + file_name + ")</b></li>";
@@ -112,39 +135,6 @@ function processColumnTitles(json) {
         	$('#invalid-column-detail-text').append(html);
 		open = true;
 	}
-	/*
-	max = 0;
-	for (var val in json.column_titles) {
-		array = CSVtoArray(val);
-		if (array.length > max) {
-			max = array.length;
-		}
-	}
-	html = '<table id="columns-table"><tr><th>No.</th>';
-	for (i=0;i<max;i++) {
-		col = i+1;
-		html+='<th class="coltitle">col ' + col + '</th>';
-	}
-	html += '</tr>';
-	row_count = 1;
-	for (var val in json.column_titles) {
-		html += '<tr><td>' + row_count + '</td>';
-		row_count++;
-		array = CSVtoArray(val);
-		column_count = 0;
-		for (var item in array) {
-			html += '<td>' + array[item] + '</td>';
-			column_count++;
-		}
-		while (column_count < max) {
-			html += '<td>&nbsp;</td>';
-			column_count++;
-		}
-		html += '</tr>';
-	}
-	html += '</table>';
-        $('#invalid-column-detail-text').html(html);
-	*/
 }
 
 $( document ).ready(function() {

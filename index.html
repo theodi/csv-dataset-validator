@@ -7,7 +7,7 @@ link: /
 <section id="front-page">
 	<h2>CSV Dataset health check</h2>
 	<p>Enter the URL of a CKAN dataset you wish to health check in the box below.</p>
-	<p><em>Note:</em>Currently this has to be the datasets API url e.g. <i>http://data.gov.uk/api/2/rest/package/spend-over-25-000-in-fco-services</i></p>
+	<p><em>Note:</em>Currently this has to be the datasets API url e.g. <i>http://data.gov.uk/api/2/rest/package/financial-transactions-data-fco</i></p>
 	<input type="text" id="input_url"></input>
 	<br/>
 	<button type="submit" class="btn btn-primary btn-bl" id="submit">Submit</button>
@@ -47,6 +47,9 @@ link: /
 	<section id="lines-per-file">
 		<h2>Number of rows per file</h2>
 		<p>Note, incompatible CSV files will be shown as having 0 rows.</p>
-		COMING SOON	
+		<div id="lines-chart">
+		<svg style="height: 500px; padding-bottom: 100px;">
+		</svg>
+		</div>
 	</section>
 </section>
