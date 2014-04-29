@@ -6,7 +6,7 @@ nv.addGraph(function() {
       .reduceXTicks(false)   //If 'false', every single x-axis tick label will be rendered.
       .showControls(false)   //Allow user to switch between 'Grouped' and 'Stacked' mode.
       .groupSpacing(0.1)    //Distance between each group of bars.
-      .tooltip(function(key, xLong, y, e, graph) { return "<p style='font-size: 1em;'>" + xLong + ": <b>" + parseFloat(y).toFixed(0) + "</b></p>";})
+      .tooltip(function(key, xLong, y, e, graph) { return "<p style='font-size: 1em;'>" + xLong + ": <b>" + y + "</b></p>";})
    ;
  
 //    chart.xAxis
