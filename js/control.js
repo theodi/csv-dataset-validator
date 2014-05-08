@@ -61,6 +61,7 @@ function processFileProblems(json) {
 	$( "#file-count" ).html(json.file_count);
 	$( "#csv-yes" ).html(json.unix_file_match);
 	$( "#csv-no" ).html(json.unix_file_mismatch);
+	$( "#invalid-csv-detail-text" ).html("");		
 	var open = false;
 	for (var file_num in json.unix_file_mixmatches) {
 		if (open) {
@@ -99,6 +100,7 @@ function processLineNumbers(json) {
 
 function processColumnTitles(json) {
 	variations = Object.keys(json.column_titles).length;
+	$('#invalid-column-detail-text').html('');
 	$( "#column-title-variations").html(variations);
 	if (variations > 4) {
                 $('#column-title-variations').css('background-color', '#f2dede');
