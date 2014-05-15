@@ -21,16 +21,31 @@ link: /
 	<progress value="0" max="100"><div id="progress" class="pgraph"><div id="bar" style="width:0%"><p>0% complete</p></div></div></progress>
 	<hr/>
 	<section id="file-problems">
-		<h2>CSV File Validation</h2>
+		<h2>CSV File Validation (Fuzzy)</h2>
 		<table id="file_validation" class="validation_table">
 		<tr>
+		<th id="invalid-csv-detail-control">&#9654;&#9660;</th>
 		<th>Listed number of CSV Files</th><td id="file-count">0</td>
 		<th>Compatible CSV Files</th><td id="csv-yes">0</td>
 		<th>Invalid files</th><td id="csv-no">0</td>
 		</table>
-		<section class="invalid-csv-detail invalid-item-detail">
+		<section id="invalid-csv-detail" class="invalid-csv-detail invalid-item-detail">
 			<div id="invalid-csv-detail-text" class="detail-text"> 
 			</div>
+		</section>
+	</section>
+	<hr/>
+	<section id="csvlint-problems">
+		<h2>CSVLint.io File Validation (Strict)</h2>
+		<table id="csvlint_file_validation" class="validation_table">
+		<tr>
+		<th id="invalid-csvlint-detail-control">&#9654;&#9660;</th>
+		<th>Invalid CSV Files</th><td id="csvlint-file-count">0</td>
+		</table>
+		<section id="invalid-csvlint-detail" class="invalid-csvlint-detail invalid-item-detail">
+			<table id="invalid-csvlint-detail-table" class="validation_table">
+			<tr><th>File</th><th class="csvlint-error">Errors</th><th class="csvlint-warning">Warnings</th><th class="csvlint-info">Info</th><th>Status</th></tr>
+			</table>
 		</section>
 	</section>
 	<hr/>
@@ -38,20 +53,27 @@ link: /
 		<h2>Column Title Validation</h2>
 		<table id="column_title_validation" class="validation_table">
 		<tr>
+		<th id="invalid-column-detail-control">&#9654;&#9660;</th>
 		<th>Number of column title variations</th><td id="column-title-variations">0</td>
 		</table>
-		<section class="invalid-column-detail invalid-item-detail">
+		<section id="invalid-column-detail" class="invalid-column-detail invalid-item-detail">
 			<div id="invalid-column-detail-text" class="detail-text"> 
 			</div>
 		</section>
 	</section>
 	<hr/>
 	<section id="lines-per-file">
-		<h2>Number of rows per file</h2>
-		<p>Note, incompatible CSV files will be shown as having 0 rows.</p>
-		<div id="lines-chart">
-		<svg style="height: 500px; padding-bottom: 100px;">
-		</svg>
-		</div>
+		<h2>Dataset statistics <span style="font-size: 0.5em;">(Incompatible CSV files are not included)</span></h2>
+		<table id="row_count_table" class="validation_table">
+		<tr>
+		<th id="row-count-detail-control">&#9654;&#9660;</th>
+		<th>Median row count</th><td id="median-row-count">0</td>
+		<th>Shortest</th><td id="shortest-row">0</td>
+		<th>Longest</th><td id="longest-row">0</td>
+		</table>
+		<section id="row-count-detail" class="row-count-detail invalid-item-detail">
+			<svg style="height: 500px; padding-bottom: 100px; width: 1000px;">
+			</svg>
+		</section>
 	</section>
 </section>

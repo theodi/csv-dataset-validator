@@ -32,6 +32,7 @@ code {
 	width: 90%;
 	font-size: 1.4em;
 	border: 1px solid gray;
+	cursor: pointer;
 }
 
 .validation_table th {
@@ -41,8 +42,8 @@ code {
 .validation_table td {
 	text-align: center;
 	padding: 10px;
-	border-left: 1px solid gray;
-	border-right: 1px solid gray;
+	border-right: none;
+	border-right: none;
 }
 #file-count {
 	background-color: gray;
@@ -79,8 +80,38 @@ code {
 	width: 100px;
 	border-right: 1px solid gray;
 }
-
-
+.row-count-detail {
+	min-width: 800px;
+}
+#row_count_table td {
+	background-color: gray;	
+}
+#invalid-csvlint-detail-table {
+	width: 100%;
+	border: none;
+}
+#invalid-csvlint-detail-table th {
+	text-align: center;
+}
+#invalid-csvlint-detail-table tr {
+/*	border-bottom: 1px solid black;	*/
+}
+#invalid-csvlint-detail-table td {
+	border-right: none;
+	border-right: none;
+}
+.csvlint-error {
+	background-color: #f2dede;
+}
+.csvlint-warning {
+	background-color: #fcf8e3;
+}
+.csvlint-info {
+	background-color: #d9edf7;
+}
+.csvlint-ok {
+	background-color: whitesmoke;
+}
 /* Progress Bar */
 
 progress {
@@ -123,7 +154,8 @@ progress {
 	border: 1px solid red;
 }
 
-#chart svg {
+svg {
 	padding-bottom: 100px;
 	height: 500px;
+	width: 800px;
 }

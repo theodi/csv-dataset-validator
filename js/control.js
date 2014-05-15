@@ -22,6 +22,19 @@ function CSVtoArray(text) {
     return a;
 };
 
+function getMedian(values) {
+
+    values.sort( function(a,b) {return a - b;} );
+
+    var half = Math.floor(values.length/2);
+
+    if(values.length % 2)
+        return values[half];
+    else
+	return values[half-1];
+//        return (values[half-1] + values[half]) / 2.0;
+}
+
 function handleValidationForURL(url) {
 	$.getJSON("http://odinprac.theodi.org/CSV_Dataset_Validator/get_data.php?url="+url, function(json) {
 		// Loading percentage
@@ -33,6 +46,7 @@ function handleValidationForURL(url) {
 		}
 		processFileProblems(json);
 		processColumnTitles(json);
+		processCSVLintResult(json);
 		processLineNumbers(json);
 	})
 	.error(function() {
@@ -57,11 +71,36 @@ function getDataFromURL(url) {
 	
 }
 
+function processCSVLintResult(json) {
+	invalid_count = 0;	
+	$("#invalid-csvlint-detail-table").html('<tr><th>File</th><th class="csvlint-error">Errors</th><th class="csvlint-warning">Warnings</th><th class="csvlint-info">Info</th><th>Status</th></tr>');
+	for (var file_num in json.csvlintData) {
+		current = json.csvlintData[file_num];
+		if (current.state == "invalid") {
+			invalid_count += 1;
+			$("#csvlint-file-count").html(invalid_count);
+		}
+		if (invalid_count > 0) {
+                	$('#csvlint-file-count').css('background-color', '#f2dede');
+		}
+		file_description = json.files[file_num]["description"];
+		result = "<tr><td class='csvlint-ok'><a href='"+current.url+"' target='_blank'>" + file_description + "</a></td>";
+		if (current.error_count > 0) { aclass="csvlint-error"; } else { aclass="csvlint-ok"; }
+		result += "<td class='"+aclass+"'>" + current.error_count + "</td>";  
+		if (current.warning_count > 0) { aclass="csvlint-warning"; } else { aclass="csvlint-ok"; }
+		result += "<td class='"+aclass+"'>" + current.warning_count + "</td>";  
+		if (current.info_count > 0) { aclass="csvlint-info"; } else { aclass="csvlint-ok"; }
+		result += "<td class='"+aclass+"'>" + current.info_count + "</td>";
+		result += "<td><img src='" + current.badge.png + "' alt='"+current.state+"'/></td>";
+		$("#invalid-csvlint-detail-table").append(result);
+	}
+}
+
 function processFileProblems(json) {
 	$( "#file-count" ).html(json.file_count);
 	$( "#csv-yes" ).html(json.unix_file_match);
 	$( "#csv-no" ).html(json.unix_file_mismatch);
-	$( "#invalid-csv-detail-text" ).html("");		
+	$( "#invalid-csv-detail-text" ).html("");
 	var open = false;
 	for (var file_num in json.unix_file_mixmatches) {
 		if (open) {
@@ -81,6 +120,7 @@ function processLineNumbers(json) {
 	var obj = {};
 	obj.key = "Line Counts";
 	var file_array = [];
+	var lengths = [];
 	for (file_num in json.files) {
 		var obj2 = {};
 		obj2.series = 0;	
@@ -90,11 +130,22 @@ function processLineNumbers(json) {
 		obj2.x = file.description;
 		obj2.xLong = shortName;
 		obj2.y = lineCount;
+		lengths.push(lineCount);
 		file_array.push(obj2);
 	}
 	obj.values = file_array;
 	data.push(obj);
+	median = getMedian(lengths);
+	console.log(lengths);
+	console.log(median);
+	$('#median-row-count').html(median);
+    	lengths.sort( function(a,b) {return a - b;} );
+	$('#shortest-row').html(lengths[0]);
+    	lengths.sort( function(a,b) {return b - a;} );
+	$('#longest-row').html(lengths[0]);
 	updateChart(chart,data);
+	
+	
 	
 }
 
@@ -145,13 +196,77 @@ $( document ).ready(function() {
 	$( "#result" ).hide();
 });
 
+function expandSection(section) {
+	$('#'+section).fadeIn();
+	$('#'+section + "-control").html("&#9660;");	
+}
+
+function collapseSection(section) {
+	$('#'+section).fadeOut();
+	$('#'+section + "-control").html("&#9654;");	
+}
+	
+file_validation_open = false;
+csvlint_validation_open = false;
+column_title_validation_open = false;
+row_count_table_open = false;
+
 function registerListeners() {
+			
+	collapseSection("invalid-csv-detail");
+	collapseSection("invalid-csvlint-detail");
+	collapseSection("invalid-column-detail");
+	collapseSection("row-count-detail");
 
 	$( "#submit" ).click(function() {
   		url = $( "#input_url").val();
 		$( "#front-page" ).fadeOut("slow",function() {
 			getDataFromURL(url);
 		});
+	});
+
+	$( "#file-problems").click(function() {
+		if (file_validation_open) {
+			collapseSection("invalid-csv-detail");
+			file_validation_open = false;
+		} else {
+			expandSection("invalid-csv-detail");
+			file_validation_open = true;
+
+		}
+	});
+	
+	$( "#csvlint-problems").click(function() {
+		if (csvlint_validation_open) {
+			collapseSection("invalid-csvlint-detail");
+			csvlint_validation_open = false;
+		} else {
+			expandSection("invalid-csvlint-detail");
+			csvlint_validation_open = true;
+
+		}
+	});
+	
+	$( "#column-titles").click(function() {
+		if (column_title_validation_open) {
+			collapseSection("invalid-column-detail");
+			column_title_validation_open = false;
+		} else {
+			expandSection("invalid-column-detail");
+			column_title_validation_open = true;
+
+		}
+	});
+	
+	$( "#lines-per-file").click(function() {
+		if (row_count_table_open) {
+			collapseSection("row-count-detail");
+			row_count_table_open = false;
+		} else {
+			expandSection("row-count-detail");
+			row_count_table_open = true;
+
+		}
 	});
 
 }

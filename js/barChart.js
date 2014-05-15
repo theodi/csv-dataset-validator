@@ -20,7 +20,7 @@ nv.addGraph(function() {
 
 function updateChart(chart,data) {
 
-	d3.select('#lines-chart svg')
+	d3.select('svg')
 		.datum(data)
 		.call(chart);
 
