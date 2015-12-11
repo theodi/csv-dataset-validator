@@ -39,6 +39,8 @@ function handleValidationForURL(url) {
 	$.getJSON("http://odinprac.theodi.org/CSV_Dataset_Validator/get_data.php?url="+url, function(json) {
 		// Loading percentage
 		console.log(json);
+		$( "#dataset-title" ).html(json.title);
+		$( "#dataset-description" ).html(json.notes);
 		percent = Math.floor((json.completed / json.file_count) * 100);
 		$('progress').attr('value',percent);
 		if (json.completed < json.file_count) {
@@ -64,8 +66,11 @@ function getDataFromURL(url) {
 	})
 	.error(function() {
         	console.log("error fetching data");
-		$( "#front-page" ).fadeIn("slow",function() {
+		$( "#result" ).fadeIn("slow",function() {
+			handleValidationForURL(url);
 		});
+		//$( "#front-page" ).fadeIn("slow",function() {
+		//});
 		//setTimeout(function(){handleValidationForURL(url);},2000);
    	});
 	
